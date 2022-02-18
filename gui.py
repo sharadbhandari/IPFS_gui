@@ -3,8 +3,8 @@ import tkinter as tk
 from tkinter import filedialog
 
 def gui():    
-    root_width = 700
-    root_height = 500
+    root_width = 800
+    root_height = 600
 
     root = tk.Tk()
     root.geometry(f"{str(root_width)}x{str(root_height)}")
@@ -48,7 +48,16 @@ def gui():
                                     width=int(root_width*0.020),
                                     relief="solid",
                                     )
-    button_add_files.grid(row=1, column=0)
+    button_add_files.grid(row=0, column=0)
+    
+    button_view_files = tk.Button(frame_left,
+                                    text="View files",
+                                    command=view_files,
+                                    borderwidth=2,
+                                    width=int(root_width*0.020),
+                                    relief="solid",
+                                    )
+    button_view_files.grid(row=1, column=0)
     
     global frame_right
     frame_right = tk.LabelFrame(main_frame, 
@@ -169,10 +178,7 @@ def add_files():
         ipfs_add = cmd.cmd(f'ipfs add {filename}').stdout.decode()
         
         with open ("ipfs_added_list.txt", "a") as f:
-            f.write(filename.split("/")[-1] + " > " + ipfs_add.split()[1] + "\n")
-        
-        with open ("ipfs_added_list.txt", "r") as f:
-            content = f.readlines()
+            f.write(filename.split("/")[-1] + "  >  " + ipfs_add.split()[1] + "\n")
             
         ipfs_add = f"{filename} added to IPFS\n\n {ipfs_add.split()[1]}"
         
@@ -182,6 +188,12 @@ def add_files():
     # filename = filedialog.askdirectory()
     # main_label.config(text=cmd.cmd(f"ls {filename}").stdout
     #                   )
+
+def view_files():
+    with open ("ipfs_added_list.txt", "r") as f:
+            content = f.read()
+
+    main_label.config(text = content)
 
 if __name__=="__main__":
     gui()
