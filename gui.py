@@ -1,4 +1,5 @@
 import cmd
+from glob import glob
 import tkinter as tk
 from tkinter import filedialog
 
@@ -32,6 +33,7 @@ def gui():
                     pady=root_height*0.05,
                     )
     
+    # global frame_left
     frame_left = tk.LabelFrame(main_frame, 
                                text="Menu",
                                relief="solid",
@@ -69,19 +71,7 @@ def gui():
                                 height=root_height*0.65)
     frame_right.grid(row=0, column=1)
     frame_right.grid_propagate(False)
-    global main_label
-    
-    main_label = tk.Label(frame_right,
-                    text=banner,
-                    justify="left"
-                    # borderwidth=1,
-                    # relief="solid",
-                    # width=int(root_width*0.092),
-                    # height=int(root_height*0.032),
-                    )
-    main_label.grid()
-    main_label.grid_propagate(False)
-    
+
     frame_right_bottom = tk.LabelFrame(main_frame, 
                                        text="IPFS status",
                                        padx=20,
@@ -91,6 +81,12 @@ def gui():
                                        height=root_height*0.25)
     frame_right_bottom.grid(row=1, column=1)
     frame_right_bottom.grid_propagate(False)
+    
+    global banner_label
+    banner_label = tk.Label(frame_right,
+                    text=banner,
+                    )
+    banner_label.grid()
 
     global button_start
     button_start = tk.Button(frame_right_bottom,
@@ -138,7 +134,10 @@ def gui():
     
     
     root.mainloop()
-    
+
+def do_nothing():
+    pass
+
 def start_ipfs():
     cmd.cmd('ipfs init &')
     if cmd.cmd('pidof ipfs').returncode != 0:
@@ -168,6 +167,17 @@ def stop_ipfs():
     button_start.config(state="active")
     button_stop.config(state="disable")
 
+def main_label(count, line):
+    global banner_label
+    banner_label.destroy()
+    main_label = tk.Label(frame_right,
+                    text=line[:-1],
+                    # borderwidth=2,
+                    relief="solid",
+                    pady=5,
+                    )
+    main_label.grid(row=count, column=0, sticky="w")
+    
 def add_files():
     filename = filedialog.askopenfilename(initialdir = "./",
                                           title = "Select a File",
@@ -182,18 +192,24 @@ def add_files():
             
         ipfs_add = f"{filename} added to IPFS\n\n {ipfs_add.split()[1]}"
         
-        main_label.config(text = ipfs_add)
-        
-    # code for browsing directory, if needed
-    # filename = filedialog.askdirectory()
-    # main_label.config(text=cmd.cmd(f"ls {filename}").stdout
-    #                   )
+        # main_label(0, ipfs_add)
+    
+def qr_buttons(count):
+    button_view_files = tk.Button(frame_right,
+                                    text="QR",
+                                    command=do_nothing,
+                                    borderwidth=2,
+                                    relief="solid",
+                                    )
+    button_view_files.grid(row=count, column=1)
 
 def view_files():
     with open ("ipfs_added_list.txt", "r") as f:
-            content = f.read()
-
-    main_label.config(text = content)
+            line_count=0
+            for line in f:
+                main_label(line_count, line)
+                qr_buttons(line_count)
+                line_count+=1
 
 if __name__=="__main__":
     gui()
