@@ -5,13 +5,13 @@
 ############### 2022 ###############
 ####################################
 
-import cmd
-import gui
+from app_functions import cmd
+import app_gui
 
 def main():
     print("App started... ")
-    if cmd.cmd('ipfs version').returncode == 0:
-        gui.gui()
+    if cmd('ipfs version').returncode == 0:
+        app_gui.main()
     else:
         print("Ipfs not found.\n please install ipfs before running this app.")
  
