@@ -20,8 +20,10 @@ def start_ipfs(parent):
         cmd('ipfs daemon > ipfs_start.log &')
 
     parent.ipfs_status.config(text="IPFS daemon status: Running\nPID: " \
-                              + str(cmd('pidof ipfs').stdout.decode())[0:-1],)
-    parent.ipfs_status.config(fg="#1e961c")
+                                   + str(cmd('pidof ipfs').stdout.decode())[0:-1],
+                              fg="#1e961c",
+                              )
+    parent.ipfs_status.config()
     
     parent.button_start.config(state="disable")
     parent.button_stop.config(state="active")
@@ -30,19 +32,20 @@ def stop_ipfs(parent):
     pid_ipfs = cmd('pidof ipfs').stdout.decode()
     cmd('kill `pidof ipfs`')
     
-    parent.ipfs_status.config(text="IPFS daemon status: Stopped\n PID: " + pid_ipfs[0:-1],)
-    parent.ipfs_status.config(fg="#FF0000")
+    parent.ipfs_status.config(text="IPFS daemon status: Stopped\n PID: " \
+                                   + pid_ipfs[0:-1], 
+                              fg="#FF0000",
+                              )
     
     parent.button_start.config(state="active")
     parent.button_stop.config(state="disable")
 
 def main_label(parent, count, line):
     parent.main_label = tk.Label(parent.frame_right,
-                          text=line[:-1],
-                          # borderwidth=2,
-                          relief="solid",
-                          pady=5,
-                          )
+                                 text=line[:-1],
+                                 relief="solid",
+                                 pady=5,
+                                 )
     parent.main_label.grid(row=count, column=0, sticky="w")
 
 def reconstruct_frame_right(parent):
@@ -80,17 +83,17 @@ def view_files(parent):
     reconstruct_frame_right(parent)
     
     with open ("ipfs_added_list.txt", "r") as f:
-            line_count=0
-            for line in f:
-                main_label(parent, line_count, line)
-                qr_buttons(parent, line_count)
-                line_count+=1
+        line_count=0
+        for line in f:
+            main_label(parent, line_count, line)
+            qr_buttons(parent, line_count)
+            line_count+=1
 
 def qr_buttons(parent, count):
     parent.button_view_files = tk.Button(parent.frame_right,
-                                 text="QR",
-                                 command=do_nothing,
-                                 borderwidth=1,
-                                 relief="solid",
-                                 )
+                                         text="QR",
+                                         command=do_nothing,
+                                         borderwidth=1,
+                                         relief="solid",
+                                         )
     parent.button_view_files.grid(row=count, column=1)
