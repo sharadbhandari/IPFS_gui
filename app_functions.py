@@ -3,8 +3,10 @@
 # Please visit the following website to read more about the issue.
 # https://github.com/lucas-clemente/quic-go/wiki/UDP-Receive-Buffer-Size
 
-import tkinter as tk
+from tkinter import *
+from tkinter import ttk
 from tkinter import filedialog
+from app_banner import *
 import subprocess
 
 def cmd(arg):
@@ -39,37 +41,30 @@ def stop_ipfs(parent):
     
     parent.button_start.config(state="active")
     parent.button_stop.config(state="disable")
-
-def main_label(parent, count, line):
-    parent.main_label = tk.Label(parent.frame_right,
-                                 text=line[:-1],
-                                 relief="solid",
-                                 pady=5,
-                                 )
-    parent.main_label.grid(row=count, column=0, sticky="w")
-
-def reconstruct_frame_right(parent):
+    
+def reconsruct_right_frame(parent):
     parent.frame_right.destroy()
-    parent.frame_right = tk.LabelFrame(parent.main_frame, 
-                                       text="Interface", 
-                                       padx=10, 
-                                       pady=10, 
-                                       relief="solid",
-                                       width=parent.width*0.70, 
-                                       height=parent.height*0.65,
-                                       )
+        
+    parent.frame_right = LabelFrame(parent.main_frame, 
+                                     text="Interface", 
+                                     padx=10, 
+                                     pady=10, 
+                                     relief="solid",
+                                     width=parent.width*0.70, 
+                                     height=parent.height*0.65
+                                     )
     parent.frame_right.grid(row=0, column=1)
     parent.frame_right.grid_propagate(False)
 
 def add_files(parent):
+    reconsruct_right_frame(parent)
+    
     filename = filedialog.askopenfilename(initialdir = "./",
                                           title = "Select a File",
                                           filetypes = (("All files", "*"),)
                                           )
     
     if filename:
-        reconstruct_frame_right(parent)
-        
         ipfs_add = cmd(f'ipfs add {filename}').stdout.decode()
         
         with open ("ipfs_added_list.txt", "a") as f:
@@ -77,23 +72,49 @@ def add_files(parent):
             
         ipfs_add = f"{filename} added to IPFS\n\n {ipfs_add.split()[1]}"
         
-        main_label(parent, 0, ipfs_add)
+        parent.main_label = Label(parent.frame_right,
+                             text=ipfs_add,
+                             relief="solid",
+                             pady=5,
+                             )
+        parent.main_label.grid(row=0, column=0, sticky="w")
     
 def view_files(parent):
-    reconstruct_frame_right(parent)
+    reconsruct_right_frame(parent)
+
+    parent.canvas_frame = LabelFrame(parent.frame_right, bd=1, relief="solid")
+    parent.canvas_frame.grid(row=0, column=0)
+        
+    parent.canvas = Canvas(parent.canvas_frame, width=500)
+    parent.canvas.grid(row=0, column=0, sticky="ws")
+
+    parent.y_scroll = ttk.Scrollbar(parent.canvas_frame, orient=VERTICAL, command=parent.canvas.yview)
+    parent.y_scroll.grid(row=0, column=1, sticky="nwse")
+
+    parent.canvas.configure(yscrollcommand=parent.y_scroll.set)
+    parent.canvas.bind('<Configure>', lambda e: parent.canvas.configure(scrollregion=parent.canvas.bbox("all")))
+
+    parent.canvas_frame_in = Frame(parent.canvas)
+
+    parent.canvas.create_window((0,0), window=parent.canvas_frame_in, anchor="nw")
     
     with open ("ipfs_added_list.txt", "r") as f:
         line_count=0
         for line in f:
-            main_label(parent, line_count, line)
-            qr_buttons(parent, line_count)
+            parent.main_label = Label(parent.canvas_frame_in,
+                                 text=line[:-1],
+                                 relief="solid",
+                                 pady=5,
+                                 )
+            parent.main_label.grid(row=line_count, column=0, sticky="w")
+            # qr_buttons(parent, line_count)
             line_count+=1
 
-def qr_buttons(parent, count):
-    parent.button_view_files = tk.Button(parent.frame_right,
-                                         text="QR",
-                                         command=do_nothing,
-                                         borderwidth=1,
-                                         relief="solid",
-                                         )
-    parent.button_view_files.grid(row=count, column=1)
+# def qr_buttons(parent, count):
+#     parent.button_view_files = Button(parent.frame_right_in,
+#                                          text="QR",
+#                                          command=do_nothing,
+#                                          borderwidth=1,
+#                                          relief="solid",
+#                                          )
+#     parent.button_view_files.grid(row=count, column=1)

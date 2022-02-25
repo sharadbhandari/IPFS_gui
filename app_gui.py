@@ -2,7 +2,7 @@ from app_functions import *
 from app_banner import *
 
 def main():
-    root = tk.Tk()
+    root = Tk()
     main_gui(root, 900, 600, "IPFS file exchange")
     root.mainloop()
 
@@ -12,13 +12,14 @@ class main_gui:
         self.width = width
         self.height = height
         self.parent.geometry(f"{str(self.width)}x{str(self.height)}")
+        self.parent.title("IPFS file share")
         
-        self.main_frame = tk.Frame(self.parent)
+        self.main_frame = Frame(self.parent)
         self.main_frame.grid(padx=self.width*0.022, 
                              pady=self.height*0.05,
                              )
         
-        self.frame_left = tk.LabelFrame(self.main_frame, 
+        self.frame_left = LabelFrame(self.main_frame, 
                                         text="Menu",
                                         relief="solid",
                                         padx=10,
@@ -28,7 +29,7 @@ class main_gui:
         self.frame_left.grid(row=0, column=0, rowspan=2, padx=15)
         self.frame_left.grid_propagate(False) 
         
-        self.button_add_files = tk.Button(self.frame_left,
+        self.button_add_files = Button(self.frame_left,
                                           text="Add file",
                                           command=lambda:add_files(self),
                                           borderwidth=1,
@@ -37,7 +38,7 @@ class main_gui:
                                           )
         self.button_add_files.grid(row=0, column=0, )
         
-        self.button_view_files = tk.Button(self.frame_left,
+        self.button_view_files = Button(self.frame_left,
                                            text="View files",
                                            command=lambda:view_files(self),
                                            borderwidth=1,
@@ -46,7 +47,7 @@ class main_gui:
                                            )
         self.button_view_files.grid(row=1, column=0)
         
-        self.frame_right = tk.LabelFrame(self.main_frame, 
+        self.frame_right = LabelFrame(self.main_frame, 
                                          text="Interface", 
                                          padx=10, 
                                          pady=10, 
@@ -56,26 +57,31 @@ class main_gui:
                                          )
         self.frame_right.grid(row=0, column=1)
         self.frame_right.grid_propagate(False)
+        
+        self.frame_right_in = Frame(self.frame_right, 
+                                    relief="solid",
+                                    )
+        self.frame_right_in.grid()
+        
+        self.banner = Label(self.frame_right_in,
+                               text=banner,
+                               padx=125, 
+                               pady=50,
+                               justify="center",
+                               )
+        self.banner.grid()
 
-        self.frame_right_bottom = tk.LabelFrame(self.main_frame, 
+        self.frame_bottom = LabelFrame(self.main_frame, 
                                                 text="IPFS status",
                                                 padx=20,
                                                 pady=5,
                                                 relief="solid",
                                                 width=self.width*0.70, 
                                                 height=self.height*0.25)
-        self.frame_right_bottom.grid(row=1, column=1)
-        self.frame_right_bottom.grid_propagate(False)
+        self.frame_bottom.grid(row=1, column=1)
+        self.frame_bottom.grid_propagate(False)
         
-        self.banner = tk.Label(self.frame_right,
-                               text=banner,
-                               padx=125, 
-                               pady=50,
-                               justify="center"
-                               )
-        self.banner.grid()
-
-        self.button_start = tk.Button(self.frame_right_bottom,
+        self.button_start = Button(self.frame_bottom,
                                       text="Start IPFS",
                                       command=lambda:start_ipfs(self),
                                       borderwidth=2,
@@ -85,7 +91,7 @@ class main_gui:
                                       )
         self.button_start.grid(row=0, column=0)
         
-        self.button_stop = tk.Button(self.frame_right_bottom,
+        self.button_stop = Button(self.frame_bottom,
                                      text="Stop IPFS",
                                      command=lambda:stop_ipfs(self),
                                      borderwidth=2,
@@ -96,7 +102,7 @@ class main_gui:
         self.button_stop.grid(row=1, column=0)
         
         if cmd('pidof ipfs').returncode == 0:
-            self.ipfs_status = tk.Label(self.frame_right_bottom,
+            self.ipfs_status = Label(self.frame_bottom,
                                         text="IPFS daemon status: Running\nPID: " \
                                             + str(cmd('pidof ipfs').stdout.decode())[0:-1],
                                         borderwidth=6,
@@ -105,7 +111,7 @@ class main_gui:
                                         fg="#1e961c"
                                         )
         else:
-            self.ipfs_status = tk.Label(self.frame_right_bottom,
+            self.ipfs_status = Label(self.frame_bottom,
                                         text="IPFS daemon status: Stopped",
                                         borderwidth=6,
                                         padx=25,
