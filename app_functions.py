@@ -86,18 +86,18 @@ def add_files(parent):
               relief="ridge",
               pady=5,
               ).grid(row=0, column=0, sticky="news")
-        
+
         Label(parent.frame_right,
               text=filename,
               bd=2,
               relief="ridge",
               pady=5,
               ).grid(row=1, column=0, sticky="news")
-        
+
         Label(parent.frame_right,
               text="",
               ).grid(row=2, column=0, sticky="news")
-        
+
         Label(parent.frame_right,
               foreground="#1e961c",
               text="Hash",
@@ -105,7 +105,7 @@ def add_files(parent):
               relief="ridge",
               pady=5,
               ).grid(row=3, column=0, sticky="news")
-        
+
         Label(parent.frame_right,
               text=ipfs_added.split()[1],
               bd=2,
@@ -155,20 +155,61 @@ def view_files(parent):
     with open("ipfs_added_list.txt", "r") as f:
         line_count = 0
         for line in f:
-            parent.main_label = Label(parent.canvas_frame_in,
-                                      text=line[:-1],
-                                      relief="solid",
-                                      pady=5,
+            parent.label1 = ttk.Label(parent.canvas_frame_in,
+                                      text=line.strip(),
+                                      #   relief="solid",
+                                      #   pady=5,
                                       )
-            parent.main_label.grid(row=line_count, column=0, sticky="w")
-            # qr_buttons(parent, line_count)
+            parent.label1.grid(row=line_count, column=0, pady= 10, sticky="w")
+            parent.label1.bind("<Button-1>",
+                               lambda event:popup(parent))
+            
             line_count += 1
+
+def popup(parent):
+    top = Toplevel()
+    
+    frm = Frame(top, bd=2, height=200, width=200, relief="solid")
+    frm.grid()
+    frm.grid_propagate(False)
+    
+    Label(frm,
+          foreground="#1e961c",
+          text="File added to IPFS",
+          bd=2,
+          relief="ridge",
+          width=27,
+          ).grid(row=0, column=0)
+    
+    Label(frm,
+          text="filename will go here",
+          bd=2,
+          relief="ridge",
+          ).grid(row=1, column=0, sticky="news")
+
+    Label(frm,
+          text="",
+          ).grid(row=2, column=0, sticky="news")
+
+    Label(frm,
+          foreground="#1e961c",
+          text="Hash",
+          bd=2,
+          relief="ridge",
+          ).grid(row=3, column=0, sticky="news")
+
+    Label(frm,
+          text="hash will go here",
+          bd=2,
+          relief="ridge",
+          ).grid(row=4, column=0, sticky="news")
+    
 
 # def qr_buttons(parent, count):
 #     parent.button_view_files = Button(parent.frame_right_in,
-#                                          text="QR",
-#                                          command=do_nothing,
-#                                          borderwidth=1,
-#                                          relief="solid",
-#                                          )
+#                                       text="QR",
+#                                       command=do_nothing,
+#                                       borderwidth=1,
+#                                       relief="solid",
+#                                       )
 #     parent.button_view_files.grid(row=count, column=1)
