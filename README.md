@@ -2,7 +2,7 @@
 This app is incomplete and under development.  
 
 ## Requirements
-Linux (tested on Arch linux)
+Linux (tested on Arch linux)  
 Python 3.10.2
 
 ## How to run this app?
