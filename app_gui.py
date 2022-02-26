@@ -5,6 +5,7 @@ from app_banner import *
 def main():
     root = Tk()
     main_gui(root, 900, 600, "IPFS file exchange")
+    
     root.mainloop()
 
 

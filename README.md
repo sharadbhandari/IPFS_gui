@@ -11,7 +11,7 @@ Run app.py with python:
     python app.py
 
 ## issue
-Some system might have to run this command with sudo:  
+In some systems, you might have to run this command with sudo:  
     sysctl -w net.core.rmem_max=2500000
 ## Please visit the following website to read more about the issue.
 [https://github.com/lucas-clemente/quic-go/wiki/UDP-Receive-Buffer-Size]

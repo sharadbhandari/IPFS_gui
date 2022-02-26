@@ -157,6 +157,8 @@ def view_files(parent):
         for line in f:
             parent.label1 = ttk.Label(parent.canvas_frame_in,
                                       text=line.strip(),
+                                      foreground="#0000FF",
+                                      cursor="hand2"
                                       #   relief="solid",
                                       #   pady=5,
                                       )
