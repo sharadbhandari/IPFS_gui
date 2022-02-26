@@ -7,6 +7,7 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog
 from app_banner import *
+from popup import *
 import subprocess
 
 
@@ -65,19 +66,18 @@ def reconsruct_right_frame(parent):
 def add_files(parent):
     reconsruct_right_frame(parent)
 
-    filename = filedialog.askopenfilename(initialdir="./",
-                                          title="Select a File",
-                                          filetypes=(("All files", "*"),)
-                                          )
+    parent.filename = filedialog.askopenfilename(initialdir="./",
+                                                 title="Select a File",
+                                                 filetypes=(
+                                                     ("All files", "*"),)
+                                                 )
 
-    if filename:
-        ipfs_added = cmd(f'ipfs add {filename}').stdout.decode()
+    if parent.filename:
+        parent.ipfs_added = cmd(f'ipfs add {parent.filename}').stdout.decode()
 
         with open("ipfs_added_list.txt", "a") as f:
-            f.write(filename.split("/")[-1] +
-                    "  >  " + ipfs_added.split()[1] + "\n")
-
-        # ipfs_added = f"{filename} added to IPFS\n\n {ipfs_added.split()[1]}"
+            f.write(parent.filename.split("/")[-1] +
+                    "  >  " + parent.ipfs_added.split()[1] + "\n")
 
         Label(parent.frame_right,
               foreground="#1e961c",
@@ -88,7 +88,7 @@ def add_files(parent):
               ).grid(row=0, column=0, sticky="news")
 
         Label(parent.frame_right,
-              text=filename,
+              text=parent.filename,
               bd=2,
               relief="ridge",
               pady=5,
@@ -107,7 +107,7 @@ def add_files(parent):
               ).grid(row=3, column=0, sticky="news")
 
         Label(parent.frame_right,
-              text=ipfs_added.split()[1],
+              text=parent.ipfs_added.split()[1],
               bd=2,
               relief="ridge",
               pady=5,
@@ -155,63 +155,17 @@ def view_files(parent):
     with open("ipfs_added_list.txt", "r") as f:
         line_count = 0
         for line in f:
-            parent.label1 = ttk.Label(parent.canvas_frame_in,
-                                      text=line.strip(),
-                                      foreground="#0000FF",
-                                      cursor="hand2"
-                                      #   relief="solid",
-                                      #   pady=5,
-                                      )
-            parent.label1.grid(row=line_count, column=0, pady= 10, sticky="w")
+            parent.label1 = Label(parent.canvas_frame_in,
+                                  cursor="hand2",
+                                  text=line.strip(),
+                                  foreground="#0000FF",
+                                  bd=2,
+                                  relief="solid",
+                                  padx=10,
+                                  pady=5,
+                                  )
+            parent.label1.grid(row=line_count, column=0, pady=10, sticky="w")
             parent.label1.bind("<Button-1>",
-                               lambda event:popup(parent))
-            
+                               lambda event: popup(parent, line))
+
             line_count += 1
-
-def popup(parent):
-    top = Toplevel()
-    
-    frm = Frame(top, bd=2, height=200, width=200, relief="solid")
-    frm.grid()
-    frm.grid_propagate(False)
-    
-    Label(frm,
-          foreground="#1e961c",
-          text="File added to IPFS",
-          bd=2,
-          relief="ridge",
-          width=27,
-          ).grid(row=0, column=0)
-    
-    Label(frm,
-          text="filename will go here",
-          bd=2,
-          relief="ridge",
-          ).grid(row=1, column=0, sticky="news")
-
-    Label(frm,
-          text="",
-          ).grid(row=2, column=0, sticky="news")
-
-    Label(frm,
-          foreground="#1e961c",
-          text="Hash",
-          bd=2,
-          relief="ridge",
-          ).grid(row=3, column=0, sticky="news")
-
-    Label(frm,
-          text="hash will go here",
-          bd=2,
-          relief="ridge",
-          ).grid(row=4, column=0, sticky="news")
-    
-
-# def qr_buttons(parent, count):
-#     parent.button_view_files = Button(parent.frame_right_in,
-#                                       text="QR",
-#                                       command=do_nothing,
-#                                       borderwidth=1,
-#                                       relief="solid",
-#                                       )
-#     parent.button_view_files.grid(row=count, column=1)
