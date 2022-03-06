@@ -7,7 +7,6 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog
 from app_banner import *
-from popup import *
 import subprocess
 
 
@@ -114,58 +113,54 @@ def add_files(parent):
               ).grid(row=4, column=0, sticky="news")
 
 
+def draw_qr_image(parent, line_count):
+    qr = qrcode.QRCode(version=1,
+                       error_correction=qrcode.constants.ERROR_CORRECT_L,
+                       box_size=10,
+                       border=4,
+                       )
+    qr.add_data(data)
+    qr.make(fit=True)
+
+    img = qr.make_image(fill_color="black", back_color="white")
+
+    img.save("qr_image{}.png".format(line_count))
+
+
+def get_qr_image(line_count):
+    with open("ipfs_added_list.txt", "r") as f:
+        tracked_line = 0
+        for line in f:
+            line_count += 1
+            if tracked_line == line_count:
+                print(line_count)
+
+
 def view_files(parent):
     reconsruct_right_frame(parent)
 
-    parent.canvas_frame = LabelFrame(parent.frame_right,
-                                     bd=2,
-                                     relief="sunken",
-                                     width=parent.width*.65,
-                                     height=parent.height*0.55,
-                                     )
-    parent.canvas_frame.grid(row=0, column=0,)
+    parent.tree_v = ttk.Treeview(parent.frame_right,
+                                 columns=("1"),
+                                 height=16,
+                                 )
+    parent.tree_v.grid()
+    # parent.tree_v["columns"] = ("1")
+    parent.tree_v.column("#0", anchor=CENTER)
+    parent.tree_v.column("#1", anchor=CENTER, stretch=NO, width=400)
 
-    parent.canvas = Canvas(parent.canvas_frame,
-                           width=parent.width*.65,
-                           height=parent.height*0.55,
-                           )
-    parent.canvas.grid(row=0, column=0,)
-
-    parent.x_scroll = ttk.Scrollbar(parent.canvas_frame,
-                                    orient=HORIZONTAL,
-                                    command=parent.canvas.xview)
-    parent.x_scroll.grid(row=1, column=0, sticky="nwse")
-
-    parent.y_scroll = ttk.Scrollbar(parent.canvas_frame,
-                                    orient=VERTICAL,
-                                    command=parent.canvas.yview)
-    parent.y_scroll.grid(row=0, column=1, sticky="nwse")
-
-    parent.canvas.configure(xscrollcommand=parent.x_scroll.set,
-                            yscrollcommand=parent.y_scroll.set,
-                            )
-    parent.canvas.bind('<Configure>', lambda e: parent.canvas.configure(
-        scrollregion=parent.canvas.bbox("all")))
-
-    parent.canvas_frame_in = Frame(parent.canvas)
-
-    parent.canvas.create_window(
-        (0, 0), window=parent.canvas_frame_in, anchor="nw")
+    parent.tree_v.heading("#0", text="Items", anchor=CENTER)
+    parent.tree_v.heading("#1", text="Values", anchor=CENTER)
 
     with open("ipfs_added_list.txt", "r") as f:
         line_count = 0
         for line in f:
-            parent.label1 = Label(parent.canvas_frame_in,
-                                  cursor="hand2",
-                                  text=line.strip(),
-                                  foreground="#0000FF",
-                                  bd=2,
-                                  relief="solid",
-                                  padx=10,
-                                  pady=5,
-                                  )
-            parent.label1.grid(row=line_count, column=0, pady=10, sticky="w")
-            parent.label1.bind("<Button-1>",
-                               lambda event: popup(parent, line))
+            parent.tree_v.insert("", 0, iid=line_count, text=line.split()[0])
+
+            parent.tree_v.insert(
+                line_count, "end", text="File name", values=(line.split()[0]))
+            parent.tree_v.insert(
+                line_count, "end", text="Hash", values=(line.split()[-1]))
+            parent.tree_v.insert(
+                line_count, 'end', text="Qr", values=(""))
 
             line_count += 1

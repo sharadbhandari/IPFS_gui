@@ -6,6 +6,10 @@ def main():
     root = Tk()
     main_gui(root, 900, 600, "IPFS file exchange")
 
+    stl = ttk.Style()
+    stl.theme_use('clam')
+    stl.configure('Treeview')
+
     root.mainloop()
 
 
@@ -40,7 +44,7 @@ class main_gui:
                                        relief="solid",
                                        )
         self.button_add_files.grid(row=0, column=0)
-        
+
         self.button_get_files = Button(self.frame_left,
                                        text="Get file",
                                        command=do_nothing,
@@ -68,12 +72,7 @@ class main_gui:
         self.frame_right.grid(row=0, column=1)
         self.frame_right.grid_propagate(False)
 
-        self.frame_right_in = Frame(self.frame_right,
-                                    relief="solid",
-                                    )
-        self.frame_right_in.grid(row=0, column=0)
-
-        self.banner = Label(self.frame_right_in,
+        self.banner = Label(self.frame_right,
                             text=banner,
                             padx=125,
                             pady=50,
@@ -133,7 +132,7 @@ class main_gui:
                                      )
 
         self.ipfs_status.grid(row=0, column=1, rowspan=2, padx=20)
-        
+
         self.button_view_files = Button(self.main_frame,
                                         text="Exit App",
                                         command=exit,
@@ -141,7 +140,7 @@ class main_gui:
                                         width=int(self.width*0.02),
                                         relief="solid",
                                         )
-        self.button_view_files.grid(row= 2, column = 1, sticky="e", pady=8)
+        self.button_view_files.grid(row=2, column=1, sticky="e", pady=8)
 
 
 if __name__ == "__main__":
