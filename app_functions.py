@@ -20,6 +20,7 @@ def do_nothing():
 
 
 def start_ipfs(parent):
+    # Starts IPFS daemon for "Start IPFS" button
     cmd('ipfs init &')
     if cmd('pidof ipfs').returncode != 0:
         cmd('ipfs daemon > ipfs_start.log &')
@@ -35,6 +36,7 @@ def start_ipfs(parent):
 
 
 def stop_ipfs(parent):
+    # Stops IPFS daemon for "Stop IPFS" button
     pid_ipfs = cmd('pidof ipfs').stdout.decode()
     cmd('kill `pidof ipfs`')
 
@@ -63,6 +65,7 @@ def reconsruct_right_frame(parent):
 
 
 def add_files(parent):
+    # function for "Add file" button
     reconsruct_right_frame(parent)
 
     parent.filename = filedialog.askopenfilename(initialdir="./",
@@ -112,31 +115,34 @@ def add_files(parent):
               pady=5,
               ).grid(row=4, column=0, sticky="news")
 
-
-def draw_qr_image(parent, line_count):
-    qr = qrcode.QRCode(version=1,
-                       error_correction=qrcode.constants.ERROR_CORRECT_L,
-                       box_size=10,
-                       border=4,
-                       )
-    qr.add_data(data)
-    qr.make(fit=True)
-
-    img = qr.make_image(fill_color="black", back_color="white")
-
-    img.save("qr_image{}.png".format(line_count))
-
-
-def get_qr_image(line_count):
-    with open("ipfs_added_list.txt", "r") as f:
-        tracked_line = 0
-        for line in f:
-            line_count += 1
-            if tracked_line == line_count:
-                print(line_count)
+########################################
+# Will work on this in the future
+########################################
+# def draw_qr_image(parent, line_count):
+#     qr = qrcode.QRCode(version=1,
+#                        error_correction=qrcode.constants.ERROR_CORRECT_L,
+#                        box_size=10,
+#                        border=4,
+#                        )
+#     qr.add_data(data)
+#     qr.make(fit=True)
+#
+#     img = qr.make_image(fill_color="black", back_color="white")
+#
+#     img.save("qr_image{}.png".format(line_count))
+#
+# def get_qr_image(line_count):
+#     with open("ipfs_added_list.txt", "r") as f:
+#         tracked_line = 0
+#         for line in f:
+#             line_count += 1
+#             if tracked_line == line_count:
+#                 print(line_count)
+########################################
 
 
 def view_files(parent):
+    # function for "View file" button
     reconsruct_right_frame(parent)
 
     parent.tree_v = ttk.Treeview(parent.frame_right,
@@ -167,6 +173,7 @@ def view_files(parent):
 
 
 def fetch_file(parent):
+    # function for "Fetch file" button
     reconsruct_right_frame(parent)
 
     parent.fetch_file_pad_top = Frame(parent.frame_right,
@@ -194,15 +201,17 @@ def fetch_file(parent):
 
 
 def fetch_file_cmd(parent):
+    # function for inner "Fetch file" button
     parent.entry_value = parent.fetch_entry.get()
 
     reconsruct_right_frame(parent)
 
     if parent.entry_value.strip():
+        # this  probably doesn't work. i should look into this.
         try:
             parent.ipfs_cat = cmd(
                 f'ipfs cat {parent.entry_value}').stdout.decode()
-        except E:
+        except:
             parent.ipfs_cat = "file with the provided hash is not found.../nPlease try again..."
     else:
         parent.ipfs_cat = "Entry was empty ..."
@@ -220,6 +229,7 @@ def fetch_file_cmd(parent):
     parent.fetch_result.grid_propagate(False)
 
 
+# displays message for functions that are not implemended yet.
 def to_be_added(parent):
     reconsruct_right_frame(parent)
 
