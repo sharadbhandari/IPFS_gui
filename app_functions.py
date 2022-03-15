@@ -210,7 +210,7 @@ def fetch_file_cmd(parent):
         # this  probably doesn't work. i should look into this.
         try:
             parent.ipfs_cat = cmd(
-                f'ipfs cat {parent.entry_value}').stdout.decode()
+                f'ipfs get {parent.entry_value} && ipfs cat {parent.entry_value}').stdout.decode()
         except:
             parent.ipfs_cat = "file with the provided hash is not found.../nPlease try again..."
     else:
