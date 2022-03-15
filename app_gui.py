@@ -39,29 +39,47 @@ class main_gui:
         self.button_add_files = Button(self.frame_left,
                                        text="Add file",
                                        command=lambda: add_files(self),
-                                       borderwidth=1,
+                                       borderwidth=3,
                                        width=int(self.width*0.02),
                                        relief="solid",
                                        )
         self.button_add_files.grid(row=0, column=0)
 
-        self.button_get_files = Button(self.frame_left,
-                                       text="Get file",
-                                       command=lambda: get_file(self),
-                                       borderwidth=1,
-                                       width=int(self.width*0.02),
-                                       relief="solid",
-                                       )
-        self.button_get_files.grid(row=1, column=0)
+        self.button_fetch_files = Button(self.frame_left,
+                                         text="Fetch file",
+                                         command=lambda: fetch_file(self),
+                                         borderwidth=3,
+                                         width=int(self.width*0.02),
+                                         relief="solid",
+                                         )
+        self.button_fetch_files.grid(row=1, column=0)
 
         self.button_view_files = Button(self.frame_left,
                                         text="View files",
                                         command=lambda: view_files(self),
-                                        borderwidth=1,
+                                        borderwidth=3,
                                         width=int(self.width*0.02),
                                         relief="solid",
                                         )
         self.button_view_files.grid(row=2, column=0)
+
+        self.button_pin_files = Button(self.frame_left,
+                                       text="Pin file",
+                                       command=lambda: to_be_added(self),
+                                       borderwidth=1,
+                                       width=int(self.width*0.02),
+                                       relief="solid",
+                                       )
+        self.button_pin_files.grid(row=3, column=0)
+
+        self.view_peers = Button(self.frame_left,
+                                 text="View peers",
+                                 command=lambda: to_be_added(self),
+                                 borderwidth=1,
+                                 width=int(self.width*0.02),
+                                 relief="solid",
+                                 )
+        self.view_peers.grid(row=4, column=0)
 
         self.frame_right = LabelFrame(self.main_frame,
                                       text="Interface",
