@@ -164,3 +164,53 @@ def view_files(parent):
                 line_count, 'end', text="Qr", values=(""))
 
             line_count += 1
+
+
+def get_file(parent):
+    reconsruct_right_frame(parent)
+
+    parent.get_file_pad_top = Frame(parent.frame_right,
+                                    height=parent.height*0.02,
+                                    )
+    parent.get_file_pad_top.grid(row=0, column=0, columnspan=2, padx=300)
+    parent.get_file_pad_top.grid_propagate(False)
+
+    parent.fetch_button = Button(parent.frame_right,
+                                 text="Fetch file",
+                                 command=lambda: get_file_cmd(parent),
+                                 borderwidth=1,
+                                 width=int(parent.width*0.02),
+                                 relief="solid",
+                                 )
+    parent.fetch_button.grid(row=1, column=0)
+
+    parent.fetch_entry = Entry(parent.frame_right,
+                               text="hello",
+                               borderwidth=1,
+                               width=int(parent.width*0.06),
+                               relief="ridge"
+                               )
+    parent.fetch_entry.grid(row=1, column=1)
+
+
+def get_file_cmd(parent):
+    parent.entry_value = parent.fetch_entry.get()
+    print(parent.entry_value)
+    reconsruct_right_frame(parent)
+
+    if parent.entry_value.strip():
+        parent.ipfs_cat = cmd(f'ipfs cat {parent.entry_value}').stdout.decode()
+    else:
+        parent.ipfs_cat = "Entry was empty ..."
+
+    parent.fetch_result = Label(parent.frame_right,
+                                text=parent.ipfs_cat,
+                                borderwidth=1,
+                                padx=50,
+                                pady=50,
+                                relief="solid",
+                                width=int(parent.width*0.08),
+                                height=int(parent.height*0.025),
+                                )
+    parent.fetch_result.grid(row=0, column=0, sticky="nsew")
+    parent.fetch_result.grid_propagate(False)

@@ -47,7 +47,7 @@ class main_gui:
 
         self.button_get_files = Button(self.frame_left,
                                        text="Get file",
-                                       command=do_nothing,
+                                       command=lambda: get_file(self),
                                        borderwidth=1,
                                        width=int(self.width*0.02),
                                        relief="solid",
